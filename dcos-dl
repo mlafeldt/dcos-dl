@@ -1,11 +1,35 @@
 #!/bin/bash
-# Download the Mesosphere DCOS Community Edition
-# Usage: dcos-dl [stable|EarlyAccess]
+#/ Usage: dcos-dl [options]
+#/
+#/     -h, --help           show help text
+#/     -e, --early          download early access version instead of stable
+#/     -o, --output <file>  write output to <file> instead of bootstrap.tar.xz
+#/
+#/ Download the Mesosphere DCOS Community Edition
 
 set -e
 set -o pipefail
 
-DCOS_CHANNEL=${1:-stable}
+DCOS_CHANNEL=stable
+OUTPUT_FILE=bootstrap.tar.xz
+
+while test "$#" -ne 0; do
+    case "$1" in
+    -h|--h|--he|--hel|--help)
+        grep '^#/' <"$0" | cut -c4-; exit 0 ;;
+    -e|--e|--ea|--ear|--earl|--early)
+        DCOS_CHANNEL=EarlyAccess; shift ;;
+    -o|--o|--ou|--out|--outp|--outpu|--output)
+        test "$#" -ge 2 || { echo >&2 "error: $1 requires an argument"; exit 1; }
+        OUTPUT_FILE="$2"; shift 2 ;;
+    --)
+        shift; break ;;
+    -|[!-]*)
+        break ;;
+    -*)
+        echo >&2 "error: invalid option '$1'"; exit 1 ;;
+    esac
+done
 
 TEMPLATE_URL="https://s3.amazonaws.com/downloads.mesosphere.io/dcos/${DCOS_CHANNEL}/cloudformation/single-master.cloudformation.json"
 BOOTSTRAP_ID=$(curl -s "$TEMPLATE_URL" | jq . | sed -n 's/.*BOOTSTRAP_ID=\(.\{40\}\).*/\1/p' | uniq)
@@ -17,4 +41,4 @@ BOOTSTRAP_ID=$BOOTSTRAP_ID
 BOOTSTRAP_URL=$BOOTSTRAP_URL
 EOF
 
-exec curl -f --retry 3 -o "bootstrap.tar.xz" "$BOOTSTRAP_URL"
+exec curl -f --retry 3 -o "$OUTPUT_FILE" "$BOOTSTRAP_URL"

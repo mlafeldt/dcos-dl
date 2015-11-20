@@ -6,13 +6,17 @@ As done by the official [AWS CloudFormation templates](https://github.com/mlafel
 
 ## Usage
 
-Download the stable version of DCOS
+Download the stable version of DCOS to `bootstrap.tar.xz`
 
-    dcos-dl stable
+    dcos-dl
 
-Download the early access version of DCOS
+Download the early access version of DCOS to `bootstrap.tar.xz`
 
-    dcos-dl EarlyAccess
+    dcos-dl --early
+
+Download DCOS to a different file
+
+    dcos-dl -o /tmp/dcos.tar.xz
 
 ## Related
 
