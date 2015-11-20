@@ -37,4 +37,6 @@ TEMPLATE_URL="https://s3.amazonaws.com/downloads.mesosphere.io/dcos/${DCOS_CHANN
 BOOTSTRAP_ID=$(curl -f -s "$TEMPLATE_URL" | sed -n 's/.*BOOTSTRAP_ID=\(.\{40\}\).*/\1/p')
 BOOTSTRAP_URL="https://downloads.mesosphere.com/dcos/${DCOS_CHANNEL}/bootstrap/${BOOTSTRAP_ID}.bootstrap.tar.xz"
 
+echo "Download URL: $BOOTSTRAP_URL"
+
 exec curl -f --retry 3 -o "$OUTPUT_FILE" "$BOOTSTRAP_URL"
