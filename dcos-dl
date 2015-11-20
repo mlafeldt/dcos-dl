@@ -34,7 +34,7 @@ done
 echo "Downloading $DCOS_CHANNEL version of DCOS to $OUTPUT_FILE ..."
 
 TEMPLATE_URL="https://s3.amazonaws.com/downloads.mesosphere.io/dcos/${DCOS_CHANNEL}/cloudformation/single-master.cloudformation.json"
-BOOTSTRAP_ID=$(curl -s "$TEMPLATE_URL" | jq . | sed -n 's/.*BOOTSTRAP_ID=\(.\{40\}\).*/\1/p' | uniq)
+BOOTSTRAP_ID=$(curl -f -s "$TEMPLATE_URL" | jq . | sed -n 's/.*BOOTSTRAP_ID=\(.\{40\}\).*/\1/p' | uniq)
 BOOTSTRAP_URL="https://downloads.mesosphere.com/dcos/${DCOS_CHANNEL}/bootstrap/${BOOTSTRAP_ID}.bootstrap.tar.xz"
 
 exec curl -f --retry 3 -o "$OUTPUT_FILE" "$BOOTSTRAP_URL"
