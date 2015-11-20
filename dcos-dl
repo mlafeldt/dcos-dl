@@ -1,0 +1,20 @@
+#!/bin/bash
+# Download the Mesosphere DCOS Community Edition
+# Usage: dcos-dl [stable|EarlyAccess]
+
+set -e
+set -o pipefail
+
+DCOS_CHANNEL=${1:-stable}
+
+TEMPLATE_URL="https://s3.amazonaws.com/downloads.mesosphere.io/dcos/${DCOS_CHANNEL}/cloudformation/single-master.cloudformation.json"
+BOOTSTRAP_ID=$(curl -s "$TEMPLATE_URL" | jq . | sed -n 's/.*BOOTSTRAP_ID=\(.\{40\}\).*/\1/p' | uniq)
+BOOTSTRAP_URL="https://downloads.mesosphere.com/dcos/${DCOS_CHANNEL}/bootstrap/${BOOTSTRAP_ID}.bootstrap.tar.xz"
+
+cat <<EOF
+DCOS_CHANNEL=$DCOS_CHANNEL
+BOOTSTRAP_ID=$BOOTSTRAP_ID
+BOOTSTRAP_URL=$BOOTSTRAP_URL
+EOF
+
+exec curl -f --retry 3 -o "bootstrap.tar.xz" "$BOOTSTRAP_URL"
