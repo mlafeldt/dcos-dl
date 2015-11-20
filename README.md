@@ -18,6 +18,8 @@ Download DCOS to a different file
 
     dcos-dl -o /tmp/dcos.tar.xz
 
+Run `dcos-dl --help` to get a list of all available options.
+
 ## Related
 
 * [dcos-bootstrap](https://github.com/mlafeldt/dcos-bootstrap)
